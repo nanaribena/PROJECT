@@ -1,0 +1,135 @@
+BEGIN Project
+
+# 1. Setup
+INITIALIZE database connection
+DEFINE user authentication system
+DEFINE form structure and database schema
+
+# 2. Main Menu
+FUNCTION MainMenu():
+    DISPLAY "1. Login"
+    DISPLAY "2. Register"
+    DISPLAY "3. Exit"
+    INPUT choice
+    IF choice == 1:
+        CALL Login()
+    ELSE IF choice == 2:
+        CALL Register()
+    ELSE IF choice == 3:
+        EXIT
+
+# 3. User Registration
+FUNCTION Register():
+    DISPLAY "Enter username:"
+    INPUT username
+    DISPLAY "Enter password:"
+    INPUT password
+    DISPLAY "Enter user type (Admin/Ketua Seksyen):"
+    INPUT user_type
+    IF username or password already exists in database:
+        DISPLAY "Error: User already registered"
+        RETURN
+    ADD username, password, and user_type to database
+    DISPLAY "Registration successful!"
+
+# 4. User Login
+FUNCTION Login():
+    DISPLAY "Enter username:"
+    INPUT username
+    DISPLAY "Enter password:"
+    INPUT password
+    FETCH user_type for username from database
+    IF username and password match a record in the database:
+        DISPLAY "Login successful!"
+        IF user_type == "Admin":
+            CALL AdminDashboard(username)
+        ELSE IF user_type == "Ketua Seksyen":
+            CALL KetuaSeksyenDashboard(username)
+    ELSE:
+        DISPLAY "Invalid login credentials"
+
+# 5. Admin Dashboard
+FUNCTION AdminDashboard(username):
+    WHILE True:
+        DISPLAY "1. Manage Users"
+        DISPLAY "2. Manage Forms"
+        DISPLAY "3. Logout"
+        INPUT choice
+        IF choice == 1:
+            CALL ManageUsers()
+        ELSE IF choice == 2:
+            CALL ManageForms()
+        ELSE IF choice == 3:
+            BREAK
+
+# 6. Ketua Seksyen Dashboard
+FUNCTION KetuaSeksyenDashboard(username):
+    WHILE True:
+        DISPLAY "1. Fill Borang ICT1"
+        DISPLAY "2. Fill Borang ICT2"
+        DISPLAY "3. Fill Borang ICT3"
+        DISPLAY "4. View Submitted Forms"
+        DISPLAY "5. Logout"
+        INPUT choice
+        IF choice == 1:
+            CALL FillForm(username, "ICT1")
+        ELSE IF choice == 2:
+            CALL FillForm(username, "ICT2")
+        ELSE IF choice == 3:
+            CALL FillForm(username, "ICT3")
+        ELSE IF choice == 4:
+            CALL ViewSubmittedForms(username)
+        ELSE IF choice == 5:
+            BREAK
+
+# 7. Fill in Form
+FUNCTION FillForm(username, form_type):
+    DISPLAY "Enter details for " + form_type
+    INPUT form_data
+    SAVE form_data with form_type and username in database
+    DISPLAY "Data saved successfully!"
+
+# 8. View Submitted Forms
+FUNCTION ViewSubmittedForms(username):
+    FETCH all forms submitted by username from database
+    IF no forms exist:
+        DISPLAY "No submitted forms available"
+    ELSE:
+        DISPLAY submitted forms
+
+# 9. Manage Users (Admin Only)
+FUNCTION ManageUsers():
+    FETCH all users from database
+    DISPLAY user details
+    DISPLAY "Select user to edit or delete:"
+    INPUT user_id
+    DISPLAY "1. Edit User"
+    DISPLAY "2. Delete User"
+    INPUT action
+    IF action == 1:
+        DISPLAY "Enter new details for user:"
+        INPUT new_details
+        UPDATE user in database with new_details
+        DISPLAY "User updated successfully"
+    ELSE IF action == 2:
+        DELETE user from database
+        DISPLAY "User deleted successfully"
+
+# 10. Manage Forms (Admin Only)
+FUNCTION ManageForms():
+    FETCH all forms from database
+    DISPLAY form details
+    DISPLAY "Select form to update status:"
+    INPUT form_id
+    DISPLAY "1. In Progress"
+    DISPLAY "2. Pending"
+    DISPLAY "3. Completed"
+    INPUT new_status
+    UPDATE form in database with new_status
+    DISPLAY "Form status updated successfully"
+
+# 11. Exit Program
+CALL MainMenu()
+CLOSE database connection
+
+END Project

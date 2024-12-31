@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Management</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your custom styles -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <!-- Table to display forms -->
+    <table id="formsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Priority</th>
+                <th>Required Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be populated by JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Modal for viewing form details -->
+    <div id="formDetailsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); padding: 20px;">
+        <div style="background-color: white; padding: 20px; max-width: 500px; margin: auto;">
+            <h2>Form Details</h2>
+            <div class="modal-body">
+                <!-- Detailed form information will be dynamically injected here -->
+            </div>
+            <button id="closeModal" style="background-color: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to load data for forms (for example, borang_ict1)
+            function loadFormData(formType) {
+                $.ajax({
+                    url: 'fetch_forms.php', // PHP file that fetches data
+                    method: 'GET',
+                    data: { form_type: formType },
+                    dataType: 'json',
+                    success: function(response) {
+                        const tableBody = $('#formsTable tbody');
+                        tableBody.empty();
+
+                        if (response.success) {
+                            response.data.forEach(form => {
+                                const row = `
+                                    <tr>
+                                        <td>${form.id}</td>
+                                        <td>${form.username}</td>
+                                        <td>${form.keutamaan}</td>
+                                        <td>${form.tarikh_diperlukan}</td>
+                                        <td>${form.status}</td>
+                                        <td><button class="view-btn" data-id="${form.id}">View</button></td>
+                                    </tr>
+                                `;
+                                tableBody.append(row);
+                            });
+                        } else {
+                            alert('No data found for ' + formType);
+                        }
+                    },
+                    error: function() {
+                        alert('Error while fetching data.');
+                    }
+                });
+            }
+
+            // Load the form data (borang_ict1 as example)
+            loadFormData('borang_ict1');
+
+            // Handle View Button Click
+            $(document).on('click', '.view-btn', function() {
+                const formId = $(this).data('id'); // Get the ID of the form
+
+                // Fetch detailed information for the clicked form
+                $.ajax({
+                    url: 'view_form.php', // PHP file to fetch detailed data
+                    method: 'GET',
+                    data: { form_id: formId }, // Send the form ID
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            const form = response.data;
+
+                            // Populate the modal with the form details
+                            $('#formDetailsModal .modal-body').html(`
+                                <h3>Form Details</h3>
+                                <p><strong>Form ID:</strong> ${form.id}</p>
+                                <p><strong>Username:</strong> ${form.username}</p>
+                                <p><strong>Priority:</strong> ${form.keutamaan}</p>
+                                <p><strong>Required Date:</strong> ${form.tarikh_diperlukan}</p>
+                                <p><strong>Status:</strong> ${form.status}</p>
+                                <p><strong>Description:</strong> ${form.keterangan_permohonan}</p>
+                            `);
+
+                            // Show the modal
+                            $('#formDetailsModal').show();
+                        } else {
+                            alert('Error fetching form details.');
+                        }
+                    },
+                    error: function() {
+                        alert('Error while fetching form details.');
+                    }
+                });
+            });
+
+            // Close the modal when the user clicks the close button
+            $('#closeModal').click(function() {
+                $('#formDetailsModal').hide();
+            });
+        });
+    </script>
+
+</body>
+</html>

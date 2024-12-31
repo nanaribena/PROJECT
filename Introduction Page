@@ -1,0 +1,12 @@
+ Introduction Page
+ User already have existing account ?
+      If yes,
+          Click button Login
+          Display user login form
+          Fill in username, password and user role
+              Information correct ?
+                  If yes,
+                      Display success popups
+                  If no,
+                      Display "Invalid username or role"
+      If no,

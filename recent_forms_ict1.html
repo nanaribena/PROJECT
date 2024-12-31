@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Forms - Borang ICT 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #formsContainer {
+            margin-top: 20px;
+        }
+        .form-entry {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-entry p {
+            margin: 5px 0;
+        }
+        .form-entry p strong {
+            width: 180px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+        .loading-message {
+            text-align: center;
+            font-weight: bold;
+        }
+        .back-to-dashboard {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-to-dashboard button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Recent Forms - Borang ICT 1</h1>
+
+    <!-- Navigation buttons -->
+    <nav>
+        <button onclick="window.location.href='recent_forms_ict1.html'" disabled>Borang ICT 1</button>
+        <button onclick="window.location.href='recent_forms_ict2.html'">Borang ICT 2</button>
+        <button onclick="window.location.href='recent_forms_ict3.html'">Borang ICT 3</button>
+    </nav>
+
+    <!-- Back to Dashboard -->
+    <div class="back-to-dashboard">
+        <button onclick="window.location.href='ketuaSeksyen_dashboard.html'">Back to Dashboard</button>
+    </div>
+
+    <!-- Container where the forms will be displayed -->
+    <div id="formsContainer"></div>
+
+    <script>
+        document.getElementById('backToDashboard').addEventListener('click', function () {
+            window.location.href = 'dashboard.html';
+        });
+    
+        function fetchForms() {
+            const formsContainer = document.getElementById('formsContainer');
+            formsContainer.innerHTML = '<p class="loading-message">Loading forms, please wait...</p>';
+    
+            fetch('fetch_forms.php?form_type=borang_ict1')
+                .then(response => response.json())
+                .then(data => {
+                    formsContainer.innerHTML = '';
+    
+                    if (data.error) {
+                        formsContainer.innerHTML = `<p class="error-message">${data.error}</p>`;
+                    } else if (data.length === 0) {
+                        formsContainer.innerHTML = '<p class="error-message">No forms found for this user.</p>';
+                    } else {
+                        data.forEach(form => {
+                            formsContainer.innerHTML += `
+                                <div class="form-entry">
+                                    <p><strong>Form ID:</strong> ${form.id}</p>
+                                    <p><strong>Perkakasan:</strong> ${form.perkakasan || 'N/A'}</p>
+                                    <p><strong>Jenis Permintaan:</strong> ${form.jenis_permintaan || 'N/A'}</p>
+                                    <p><strong>Keutamaan:</strong> ${form.keutamaan || 'N/A'}</p>
+                                    <p><strong>Date Required:</strong> ${form.tarikh_diperlukan || 'N/A'}</p>
+                                    <p><strong>Description:</strong> ${form.keterangan_permohonan || 'N/A'}</p>
+                                    <p><strong>Created At:</strong> ${form.created_at}</p>
+                                </div>`;
+                        });
+                    }
+                })
+                .catch(error => {
+                    formsContainer.innerHTML = '<p class="error-message">An error occurred. Please try again later.</p>';
+                    console.error(error);
+                });
+        }
+    
+        fetchForms();
+    </script>
+    
+
+</body>
+</html>

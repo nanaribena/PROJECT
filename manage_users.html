@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #020c1b, #0b1d3f); /* Dark blue gradient */
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #00ffff; /* Bright cyan for title */
+            letter-spacing: 2px;
+        }
+
+        /* Main Container */
+        main {
+            background: rgba(20, 30, 48, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 1100px;
+            width: 90%;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 30px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .back-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Back Button Container */
+        .back-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            background: linear-gradient(135deg, #1d4b6f, #2c4f64);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #0a9cc2, #1d5b6e);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .tab:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: rgba(20, 30, 48, 0.95);
+            border-radius: 10px;
+            border-top: 3px solid #00ffff;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px;
+        }
+
+        th {
+            background-color: #24344d;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: rgba(20, 30, 48, 0.95);
+            border-bottom: 1px solid #1f4068;
+            color: #ffffff;
+        }
+
+        tr:hover td {
+            background-color: #24344d;
+        }
+
+        /* Action Buttons (Edit & Delete) */
+        .edit-user, .delete-user {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            margin-right: 10px;
+        }
+
+        .edit-user {
+            background-color: #ffa500;
+            color: #fff;
+        }
+
+        .edit-user:hover {
+            background-color: #e68900;
+            transform: scale(1.05);
+        }
+
+        .edit-user:active {
+            transform: scale(0.95);
+        }
+
+        .delete-user {
+            background-color: #e53935;
+            color: #fff;
+        }
+
+        .delete-user:hover {
+            background-color: #c62828;
+            transform: scale(1.05);
+        }
+
+        .delete-user:active {
+            transform: scale(0.95);
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadUserData();
+        });
+
+        let adminData = [];
+        let ketuaSeksyenData = [];
+
+        function loadUserData() {
+            fetch('fetch_users.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        adminData = [];
+                        ketuaSeksyenData = [];
+
+                        data.users.forEach(user => {
+                            if (user.user_role === 'Admin') {
+                                adminData.push(user);
+                            } else if (user.user_role === 'Ketua Seksyen') {
+                                ketuaSeksyenData.push(user);
+                            }
+                        });
+
+                        displayData('admin'); // Default to displaying Admins first
+                    } else {
+                        console.error('Error fetching user data:', data.message);
+                        alert('Failed to fetch user data.');
+                    }
+                })
+                .catch(error => console.error('Error loading user data:', error));
+        }
+
+        function displayData(section) {
+            const adminSection = document.getElementById('adminSection');
+            const ketuaSeksyenSection = document.getElementById('ketuaSeksyenSection');
+
+            // Hide both sections by default
+            adminSection.style.display = 'none';
+            ketuaSeksyenSection.style.display = 'none';
+
+            if (section === 'admin') {
+                adminSection.style.display = 'block';
+                renderTable(adminData, 'adminTableBody');
+            } else if (section === 'ketuaSeksyen') {
+                ketuaSeksyenSection.style.display = 'block';
+                renderTable(ketuaSeksyenData, 'ketuaSeksyenTableBody');
+            }
+        }
+
+        function renderTable(data, tableBodyId) {
+            const tableBody = document.getElementById(tableBodyId);
+            tableBody.innerHTML = '';
+
+            data.forEach((user, index) => {
+                const row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.full_email}</td>
+                    <td>${user.no_tel}</td>
+                    <td>${user.user_role}</td>
+                    <td>
+                        <button class="edit-user" data-id="${user.id}">Edit</button>
+                        <button class="delete-user" data-id="${user.id}">Delete</button>
+                    </td>
+                </tr>`;
+
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+
+            addEditListeners();
+            addDeleteListeners();
+        }
+
+        function addEditListeners() {
+            const editButtons = document.querySelectorAll('.edit-user');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.dataset.id;
+                    const row = this.closest('tr');
+                    const usernameCell = row.children[1];
+                    const emailCell = row.children[2];
+                    const phoneCell = row.children[3];
+                    const roleCell = row.children[4];
+
+                    const isEditing = this.classList.contains('save-edit');
+
+                    if (isEditing) {
+                        const updatedData = {
+                            id: userId,
+                            username: usernameCell.querySelector('input').value,
+                            full_email: emailCell.querySelector('input').value,
+                            no_tel: phoneCell.querySelector('input').value,
+                            user_role: roleCell.querySelector('input').value,
+                        };
+
+                        fetch('edit_user.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(updatedData),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('User details updated successfully.');
+                                    loadUserData();
+                                } else {
+                                    console.error('Update failed:', data.message);
+                                    alert('Failed to update user details.');
+                                }
+                            })
+                            .catch(error => console.error('Error updating user details:', error));
+                    } else {
+                        usernameCell.innerHTML = `<input type="text" value="${usernameCell.textContent}" />`;
+                        emailCell.innerHTML = `<input type="email" value="${emailCell.textContent}" />`;
+                        phoneCell.innerHTML = `<input type="text" value="${phoneCell.textContent}" />`;
+                        roleCell.innerHTML = `<input type="text" value="${roleCell.textContent}" />`;
+
+                        this.textContent = 'Save';
+                        this.classList.add('save-edit');
+                    }
+                });
+            });
+        }
+
+        function addDeleteListeners() {
+            const deleteButtons = document.querySelectorAll('.delete-user');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.dataset.id;
+
+                    const confirmation = confirm('Are you sure you want to delete this user?');
+                    if (confirmation) {
+                        fetch('delete_user.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: userId }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('User deleted successfully.');
+                                    loadUserData();
+                                } else {
+                                    console.error('Delete failed:', data.message);
+                                    alert('Failed to delete user.');
+                                }
+                            })
+                            .catch(error => console.error('Error deleting user:', error));
+                    }
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Manage Users</h1>
+    </header>
+
+    <main>
+        <div class="tabs">
+            <div class="tab active" onclick="displayData('admin')">Admin</div>
+            <div class="tab" onclick="displayData('ketuaSeksyen')">Ketua Seksyen</div>
+        </div>
+
+        <!-- Admin Section -->
+        <div id="adminSection" class="tab-content active">
+            <h2>ADMIN</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Ketua Seksyen Section -->
+        <div id="ketuaSeksyenSection" class="tab-content">
+            <h2>KETUA SEKSYEN</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ketuaSeksyenTableBody"></tbody>
+            </table>
+        </div>
+    </main>
+</body>
+<div class="back-btn-container">
+    <button class="back-btn" onclick="window.history.back()">Back to Dashboard</button>
+</div>
+</html>

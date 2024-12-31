@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Form Status</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Your custom CSS -->
+</head>
+<body>
+    <h1>Update Form Status</h1>
+
+    <form id="updateForm">
+        <!-- Form Type Selection -->
+        <label for="formType">Form Type:</label>
+        <select id="formType" name="formType" required>
+            <option value="">Select Form Type</option>
+            <option value="borang_ict1">Form 1</option>
+            <option value="borang_ict2">Form 2</option>
+        </select>
+
+        <!-- Status Selection -->
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="">Select Status</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+
+        <button type="submit">Update Status</button>
+    </form>
+
+    <div id="resultMessage"></div>
+
+    <script>
+        // Listen for form submission
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const formType = document.getElementById('formType').value;
+            const status = document.getElementById('status').value;
+
+            // Check if both fields are filled out
+            if (!formType || !status) {
+                document.getElementById('resultMessage').textContent = "Please select both Form Type and Status.";
+                return;
+            }
+
+            // Prepare the data to be sent in the POST request
+            const data = {
+                formType: formType,
+                status: status
+            };
+
+            // Send data to PHP using fetch API
+            fetch('update_form.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                const resultMessage = document.getElementById('resultMessage');
+                if (responseData.success) {
+                    resultMessage.textContent = responseData.message;
+                    resultMessage.style.color = 'green';
+                } else {
+                    resultMessage.textContent = responseData.message;
+                    resultMessage.style.color = 'red';
+                }
+            })
+            .catch(error => {
+                const resultMessage = document.getElementById('resultMessage');
+                resultMessage.textContent = "Error: " + error.message;
+                resultMessage.style.color = 'red';
+            });
+        });
+    </script>
+</body>
+</html>

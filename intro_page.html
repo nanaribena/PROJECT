@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ICTForms</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #020c1b, #0b1d3f); /* Darker blue leaning towards black */
+            color: #ffffff; /* White text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.5s ease; /* Smooth background transition */
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInText 1s ease-out forwards 0.5s; /* Smooth text fade-in */
+            color: #00bcd4; /* Soft blue */
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 80%;
+            font-weight: lighter;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInText 1s ease-out forwards 1.5s; /* Fade-in text */
+        }
+
+        .button-container {
+            opacity: 0;
+            animation: fadeInText 1s ease-out forwards 2s; /* Fade-in button container */
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button {
+            padding: 12px 30px;
+            margin: 10px;
+            border: 2px solid #00bcd4; /* Soft blue border */
+            border-radius: 50px; /* Smooth rounded edges */
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: transparent;
+            color: #00bcd4; /* Soft blue text */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease; /* Smooth button transitions */
+            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.2); /* Subtle shadow */
+        }
+
+        .button:hover {
+            background-color: #00bcd4; /* Blue background on hover */
+            color: #ffffff; /* White text on hover */
+            transform: translateY(-5px); /* Subtle upward shift */
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3); /* Enhanced shadow */
+        }
+
+        .button:focus {
+            outline: none;
+        }
+
+        /* Smooth fade-in effect */
+        @keyframes fadeInText {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .button {
+                font-size: 16px;
+                padding: 12px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to E-Form Information Technology Unit</h1>
+    <p>Your go-to platform for managing forms efficiently!</p>
+    <div class="button-container">
+        <button class="button" onclick="window.location.href='login.php'">Login</button>
+        <button class="button" onclick="window.location.href='register_form.html'">Register</button>
+    </div>
+</body>
+</html>

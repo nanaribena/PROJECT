@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Form Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>View Form Details</h1>
+    </header>
+    <main>
+        <div id="formDetails">
+            <!-- Form details will be populated here -->
+        </div>
+        <button id="updateStatusBtn">Update Status</button>
+    </main>
+
+    <script>
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id'); // Get 'id' from the URL
+            const formType = urlParams.get('form_type'); // Get 'form_type' from the URL
+
+            console.log("Form ID:", id);  // Debugging log
+            console.log("Form Type:", formType);  // Debugging log
+
+            // Fetch form details from the server
+            $.ajax({
+                url: 'fetch_form_details.php',
+                method: 'GET',
+                data: { id: id, form_type: formType }, // Sending data to server
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        const form = response.data;
+                        let formDetails = `
+                            <h3>Form ID: ${form.id}</h3>
+                            <p><strong>Username:</strong> ${form.username}</p>
+                            <p><strong>Priority:</strong> ${form.keutamaan}</p>
+                            <p><strong>Required Date:</strong> ${form.tarikh_diperlukan}</p>
+                            <p><strong>Status:</strong> ${form.status}</p>
+                            <p><strong>Comments:</strong> ${form.keterangan}</p>
+                        `;
+                        $('#formDetails').html(formDetails);
+                    } else {
+                        alert('Failed to fetch form details');
+                    }
+                },
+                error: function() {
+                    alert('Error while fetching data');
+                }
+            });
+
+            // Update status when button is clicked
+            $('#updateStatusBtn').click(function() {
+                const status = 'Completed';  // Example: 'Completed' status
+                console.log("Updating form status to:", status); // Debugging log
+
+                // AJAX request to update form status
+                $.ajax({
+                    url: 'update_form_status.php',
+                    method: 'POST',
+                    data: {
+                        form_type: formType,  // Send the form type
+                        id: id,               // Send the form ID
+                        status: status        // Send the status
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        console.log('Response:', xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

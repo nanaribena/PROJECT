@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Forms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h1>My Submitted Forms</h1>
+
+<select id="form-type" onchange="fetchForms()">
+    <option value="">Select Form Type</option>
+    <option value="borang_ict1">Borang ICT 1</option>
+    <option value="borang_ict2">Borang ICT 2</option>
+    <option value="borang_ict3">Borang ICT 3</option>
+</select>
+
+<div id="forms-container">
+    <!-- Forms will be loaded here -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function fetchForms() {
+    const formType = document.getElementById('form-type').value;
+
+    // Check if the form type is empty and return early
+    if (!formType) {
+        document.getElementById('forms-container').innerHTML = "<p>Please select a form type.</p>";
+        return;
+    }
+
+    console.log("Selected Form Type:", formType); // Log to confirm form type is set correctly
+
+    // Show loading message
+    document.getElementById('forms-container').innerHTML = "<p>Loading...</p>";
+
+    // Send AJAX request to fetch data
+    $.ajax({
+        url: 'fetch_forms.php',
+        type: 'GET',
+        data: { form_type: formType },
+        success: function(response) {
+            console.log(response); // Log the response for debugging
+            if (response.success) {
+                let formsHTML = '<table><thead><tr><th>ID</th><th>Form Type</th><th>Created At</th><th>Status</th></tr></thead><tbody>';
+                response.data.forEach(function(form, index) {
+                    formsHTML += `<tr>
+                        <td>${index + 1}</td>
+                        <td>${form.form_type}</td>
+                        <td>${form.created_at}</td>
+                        <td>${form.status}</td>
+                    </tr>`;
+                });
+                formsHTML += '</tbody></table>';
+                document.getElementById('forms-container').innerHTML = formsHTML;
+            } else {
+                document.getElementById('forms-container').innerHTML = `<p>${response.message}</p>`;
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr, status, error); // Log AJAX errors for debugging
+            document.getElementById('forms-container').innerHTML = "<p>An error occurred while fetching the data.</p>";
+        }
+    });
+}
+</script>
+
+</body>
+</html>

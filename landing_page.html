@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to E-Form IT Unit</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #020c1b, #0b1d3f); /* Darker blue leaning towards black */
+            color: #ffffff; /* White text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.5s ease; /* Smooth background transition */
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInText 1s ease-out forwards 0.5s; /* Smooth text fade-in */
+            color: #00bcd4; /* Soft blue */
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 80%;
+            font-weight: lighter;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInText 1s ease-out forwards 1.5s; /* Fade-in text */
+        }
+
+        /* Animation for fade-in effect */
+        @keyframes fadeInText {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>JABATAN CETAK KERAJAAN NEGERI SABAH</h1>
+    <p>Please wait while we redirect you...</p>
+
+    <script>
+        // Redirect after 5 seconds
+        setTimeout(function () {
+            window.location.href = "intro_page.html";
+        }, 5000);
+    </script>
+
+</body>
+</html>

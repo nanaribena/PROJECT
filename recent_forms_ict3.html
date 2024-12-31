@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Forms - Borang ICT 3</title>
+    <style>
+        /* Same CSS as above */
+    </style>
+</head>
+<body>
+
+    <h1>Recent Forms - Borang ICT 3</h1>
+
+    <!-- Navigation buttons -->
+    <nav>
+        <button onclick="window.location.href='recent_forms_ict1.html'">Borang ICT 1</button>
+        <button onclick="window.location.href='recent_forms_ict2.html'">Borang ICT 2</button>
+        <button onclick="window.location.href='recent_forms_ict3.html'" disabled>Borang ICT 3</button>
+    </nav>
+
+    <!-- Back to Dashboard -->
+    <div class="back-to-dashboard">
+        <button onclick="window.location.href='ketuaSeksyen_dashboard.html'">Back to Dashboard</button>
+    </div>
+
+    <!-- Container where the forms will be displayed -->
+    <div id="formsContainer"></div>
+
+    <script>
+        // Function to fetch and display forms for Borang ICT 3
+        function fetchForms() {
+            const formsContainer = document.getElementById('formsContainer');
+            formsContainer.innerHTML = '<p class="loading-message">Loading forms, please wait...</p>';
+
+            fetch('fetch_forms.php?form_type=borang_ict3')
+                .then(response => response.json())
+                .then(data => {
+                    formsContainer.innerHTML = ''; // Clear existing forms
+
+                    if (data.error) {
+                        formsContainer.innerHTML = `<p class="error-message">${data.error}</p>`;
+                    } else if (data.length === 0) {
+                        formsContainer.innerHTML = '<p class="error-message">No forms found for Borang ICT 3.</p>';
+                    } else {
+                        data.forEach(form => {
+                            let formHTML = `
+                                <div class="form-entry">
+                                    <p><strong>Form ID:</strong> ${form.id}</p>
+                                    <p><strong>Perkakasan:</strong> ${form.perkakasan || 'N/A'}</p>
+                                    <p><strong>Jenis Permintaan:</strong> ${form.jenis_permintaan || 'N/A'}</p>
+                                    <p><strong>Keutamaan:</strong> ${form.keutamaan || 'N/A'}</p>
+                                    <p><strong>Tarikh Diperlukan:</strong> ${form.tarikh_diperlukan || 'N/A'}</p>
+                                    <p><strong>Hari:</strong> ${form.hari || 'N/A'}</p>
+                                    <p><strong>Keterangan Permohonan:</strong> ${form.keterangan_permohonan || 'N/A'}</p>
+                                    <p><strong>Created At:</strong> ${form.created_at}</p>
+                                </div>
+                            `;
+                            formsContainer.innerHTML += formHTML;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching forms:', error);
+                    formsContainer.innerHTML = `
+                        <p class="error-message">An error occurred while fetching forms. Please try again later.</p>
+                    `;
+                });
+        }
+
+        // Fetch forms on page load
+        fetchForms();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Form</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Submit Form</h1>
+    <form id="formSubmit">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="form_type">Form Type:</label>
+        <select id="form_type" name="form_type" required>
+            <option value="ICT1">ICT1</option>
+            <option value="ICT2">ICT2</option>
+            <option value="ICT3">ICT3</option>
+        </select><br><br>
+
+        <label for="form_data">Details:</label>
+        <textarea id="form_data" name="form_data" required></textarea><br><br>
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <script>
+        function submitForm() {
+            const formData = {
+                username: document.getElementById('username').value,
+                form_type: document.getElementById('form_type').value,
+                form_data: document.getElementById('form_data').value
+            };
+
+            axios.post('http://127.0.0.1:5000/submit_form', formData)
+                .then(response => {
+                    alert(response.data.message);
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Failed to submit the form.");
+                });
+        }
+    </script>
+</body>
+</html>

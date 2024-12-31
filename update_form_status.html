@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Status</title>
+    <style>
+        /* Same styles as before */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #020c1b, #0b1d3f);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #00ffff;
+            letter-spacing: 3px;
+            margin-top: 30px;
+            text-shadow: 2px 2px 5px rgba(0, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        main {
+            background: rgba(20, 30, 48, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin: 12px 0;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: capitalize;
+            color: #e0e0e0;
+            display: block;
+        }
+
+        select, input {
+            padding: 12px;
+            margin: 12px 0;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #1f4068;
+            background-color: rgba(20, 30, 48, 0.95);
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        button {
+            padding: 14px 22px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            font-size: 1.2rem;
+            font-weight: 600;
+            width: 100%;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .back-button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .back-button {
+            padding: 12px 20px;
+            background-color: #28a745;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        // Function to auto-fill form fields based on URL parameters
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const formId = urlParams.get('id'); // Get the form ID from the URL
+            const formType = urlParams.get('form_type'); // Get the form type from the URL
+
+            if (formId) {
+                document.getElementById('form_id').value = formId; // Fill in the form ID
+            }
+
+            if (formType) {
+                const displayType = getReadableFormType(formType); // Convert to readable format
+                document.getElementById('form_type').value = displayType; // Fill in the form type
+            }
+        });
+
+        // Map table names to readable form types
+        function getReadableFormType(formType) {
+            switch (formType) {
+                case 'borang_ict1':
+                    return 'ICT1';
+                case 'borang_ict2':
+                    return 'ICT2';
+                case 'borang_ict3':
+                    return 'KEW.PA-9';
+                default:
+                    return 'Unknown Type';
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Update Status</h1>
+    </header>
+    <main>
+        <form action="update_status.php" method="POST">
+            <label for="form_type">Form Type:</label>
+            <input type="text" name="form_type" id="form_type" readonly>
+
+            <label for="form_id">Form ID:</label>
+            <input type="number" name="form_id" id="form_id" readonly>
+
+            <label for="status">Status:</label>
+            <select name="status" id="status" required>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <button type="submit">Update Status</button>
+        </form>
+        
+        <div class="back-button-container">
+            <button class="back-button" onclick="window.location.href='admin_dashboard.html'">Back to Dashboard</button>
+        </div>
+    </main>
+</body>
+</html>

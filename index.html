@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submitted Forms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Submitted Forms</h1>
+    <div id="forms-container">
+        <p>Loading...</p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Fetch data from backend
+            $.ajax({
+                url: 'fetch_user_form.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        displayForms(response.data);
+                    } else {
+                        handleError(response.message || "An error occurred.");
+                    }
+                },
+                error: function () {
+                    handleError("Failed to connect to the server.");
+                }
+            });
+
+            function displayForms(forms) {
+                if (!forms.length) {
+                    $('#forms-container').html('<p>No submitted forms found.</p>');
+                    return;
+                }
+
+                let tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Form Type</th>
+                                <th>Keutamaan</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                forms.forEach(form => {
+                    tableHTML += `
+                        <tr>
+                            <td>${form.id}</td>
+                            <td>${form.username}</td>
+                            <td>${form.form_type}</td>
+                            <td>${form.keutamaan}</td>
+                            <td>${form.status}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += '</tbody></table>';
+                $('#forms-container').html(tableHTML);
+            }
+
+            function handleError(message) {
+                $('#forms-container').html(`<p class="error">${message}</p>`);
+            }
+        });
+    </script>
+</body>
+</html>
